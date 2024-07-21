@@ -11,3 +11,8 @@ Guide for bs4 https://www.crummy.com/software/BeautifulSoup/bs4/doc/
 
 Thoughts:
 Tool for fetching data must support js to web-scrap dynamicly. lib requests doesn't suppoer js
+
+# Requirements
+- Python 3.11
+- [Miniconda](https://docs.anaconda.com/free/miniconda/index.html)
+- `pip install -r requirements.txt`
