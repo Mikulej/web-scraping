@@ -1,39 +1,77 @@
 from bs4 import BeautifulSoup
 
+from selenium.webdriver import ChromeOptions
 from selenium.webdriver import Chrome
 from selenium.webdriver.common.by import By
 
-driver = Chrome()
-url = 'https://avi.im/stuff/js-or-no-js.html' # test url
-#url = 'https://store.steampowered.com/'
-page = driver.get(url)
-p_element = driver.find_element(by=By.ID,value='intro-text')
-print(p_element.text)
-#soup = BeautifulSoup(page.text, 'lxml')
-#Get html from url
-# url = 'https://store.steampowered.com/'
-# #url = 'http://olympus.realpython.org/profiles/aphrodite'
+#Initialize webdriver
+options = ChromeOptions()
+options.add_experimental_option('excludeSwitches', ['enable-logging'])
+driver = Chrome(options=options)
 
-# #Convert to soup object
-# #soup = BeautifulSoup(response.text, 'html.parser')
-# soup = BeautifulSoup(text, 'lxml')
-# featuredGames = soup.find_all('a',class_='store_main_capsule')
-# print(soup.prettify())
-# for link in featuredGames:
-#     print("Featured game")
-# carousels = soup.findAll(class_='carousel_items responsive_scroll_snap_ctn')
-# carousel = carousels[0]
-# # for link in carousel.findAll('a',class_="store_main_capsule responsive_scroll_snap_start broadcast_capsule"):
-# # #for link in carousel.findAll.a:
-# #     print("Featured game")
+#Render html from url
+#url = 'https://avi.im/stuff/js-or-no-js.html' # test url
+url = 'https://store.steampowered.com/'
+driver.get(url)
 
-# carousel = carousels[1]
-# for link in carousel.findAll('a',class_="store_capsule daily_deal"):
-#     #for gameLink in link.findAll():
-#     print("Capsule game")
-#     #for gameLink in link.findAll('a'):
-#         #print(gameLink)
-#         #gameLink = link.find('a',href=True)
-#     #print(link.prettify())
-# #print(carousel)
-# #print(soup.prettify())
+print("\nFeatured Games:")
+
+elements = driver.find_elements(By.CLASS_NAME, 'store_main_capsule')
+
+for WebElement in elements:
+   #Convert Selenium's WebElement to Soup
+   elementHTML = WebElement.get_attribute('outerHTML') #gives exact HTML content of the element
+   elementSoup = BeautifulSoup(elementHTML,'html.parser')
+
+   #Get game name
+   name = elementSoup.find(class_="app_name").text
+
+   #Get game link
+   link = elementSoup.find('a').get('href')
+
+   #Get game price
+   price = elementSoup.find(class_="discount_final_price")
+   if(price != None):
+      price = price.text
+    #Get producent
+#    subdriver = Chrome()
+#    subdriver.get(link)
+#    #check if has button
+#    elements = driver.find_elements(By.ID, 'view_product_page_btn')
+#    if len(elements) > 0:
+#       print("Has button!")
+#    else:
+#       print("No button!")
+# #    try:
+#       button = subdriver.find_element(By.ID, 'view_product_page_btn')
+#       print("Has button!")
+#    except any:
+#       print("No button!")
+#   subdriver.implicitly_wait(0.5)
+
+   
+
+   print(name, " ", price, " ", link)
+   
+
+print("\nDaily sales:")
+
+elements = driver.find_elements(By.CLASS_NAME, 'store_capsule')
+
+for WebElement in elements:
+    #Convert Selenium's WebElement to Soup
+   elementHTML = WebElement.get_attribute('outerHTML') #gives exact HTML content of the element
+   elementSoup = BeautifulSoup(elementHTML,'html.parser')
+
+   #Get game name
+   name = elementSoup.find('img').get('alt')
+
+   #Get game link
+   link = elementSoup.find('a').get('href')
+
+   #Get game price
+   price = elementSoup.find(class_="discount_final_price")
+   if(price != None):
+      price = price.text
+   print(name, " ", price," ",link)
+   #print(elementSoup.prettify())
